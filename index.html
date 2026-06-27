@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏦 Ultra-Realistic ATM & Mobile Banking Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- ========== ATM INTERFACE (LEFT SIDE) ========== -->
+        <div class="device-container atm-device">
+            <div class="atm-container">
+                <!-- ATM Header -->
+                <div class="atm-header">
+                    <h1>🏦 BANK ATM</h1>
+                    <p class="tagline">24/7 Banking Services</p>
+                </div>
+
+                <!-- Card Slot Display -->
+                <div class="card-slot-display" id="cardSlotDisplay">
+                    <div class="card-guide">INSERT CARD</div>
+                    <div class="card-visual-large" id="cardVisualLarge">
+                        <div class="chip"></div>
+                    </div>
+                </div>
+
+                <!-- Cash Output Display -->
+                <div class="cash-output-display" id="cashOutput"></div>
+
+                <!-- Screen Wrapper -->
+                <div class="screen-wrapper">
+                    
+                    <!-- Screen 1: Insert Card -->
+                    <div id="insertCardScreen" class="screen active">
+                        <div class="atm-display">
+                            <h2>Welcome to ATM</h2>
+                            <p class="subtitle">Insert Your Card</p>
+                            
+                            <div class="card-selector">
+                                <p><strong>Select Card Type:</strong></p>
+                                <button class="btn btn-card debit-btn" onclick="selectCard('debit', '1234')">
+                                    💳 DEBIT CARD
+                                </button>
+                                <button class="btn btn-card credit-btn" onclick="selectCard('credit', '5678')">
+                                    💰 CREDIT CARD
+                                </button>
+                            </div>
+
+                            <div id="insertError" class="error-message"></div>
+
+                            <button class="btn btn-secondary" onclick="toggleTestCards()">Test Cards Info</button>
+
+                            <div id="testCardsInfo" class="test-info" style="display:none; margin-top: 15px;">
+                                <p><strong>Test Debit Card:</strong></p>
+                                <p>Card: 1234 | PIN: 1111 | Balance: $5000</p>
+                                <hr>
+                                <p><strong>Test Credit Card:</strong></p>
+                                <p>Card: 5678 | PIN: 2222 | Limit: $10000</p>
+                                <hr>
+                                <p><strong>Test Card (Low Balance):</strong></p>
+                                <p>Card: 9999 | PIN: 3333 | Balance: $2000</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screen 2: PIN Entry -->
+                    <div id="pinScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Enter PIN</h2>
+                            <p class="subtitle">Card: <span id="displayCardNum">****</span></p>
+                            
+                            <div class="pin-input-container">
+                                <div class="pin-display" id="pinDisplay">• • • •</div>
+                            </div>
+
+                            <div class="pin-buttons">
+                                <button class="btn btn-num" onclick="appendPin('1')">1</button>
+                                <button class="btn btn-num" onclick="appendPin('2')">2</button>
+                                <button class="btn btn-num" onclick="appendPin('3')">3</button>
+                                <button class="btn btn-num" onclick="appendPin('4')">4</button>
+                                <button class="btn btn-num" onclick="appendPin('5')">5</button>
+                                <button class="btn btn-num" onclick="appendPin('6')">6</button>
+                                <button class="btn btn-num" onclick="appendPin('7')">7</button>
+                                <button class="btn btn-num" onclick="appendPin('8')">8</button>
+                                <button class="btn btn-num" onclick="appendPin('9')">9</button>
+                                <button class="btn btn-num" onclick="appendPin('0')">0</button>
+                            </div>
+
+                            <div id="pinError" class="error-message"></div>
+
+                            <button class="btn btn-danger" onclick="clearPin()">Clear</button>
+                            <button class="btn btn-danger" onclick="cancelTransaction()">Cancel</button>
+                            <button class="btn btn-success" onclick="verifyPin()">Enter</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 3: Main Menu -->
+                    <div id="mainMenuScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Main Menu</h2>
+                            <p class="subtitle" id="userGreeting">Welcome!</p>
+                            
+                            <div class="menu-grid">
+                                <button class="menu-btn" onclick="goToScreen('balanceScreen')">
+                                    💰 Check Balance
+                                </button>
+                                <button class="menu-btn" onclick="goToScreen('withdrawScreen')">
+                                    💵 Withdraw Cash
+                                </button>
+                                <button class="menu-btn" onclick="goToScreen('statementScreen')">
+                                    📄 Mini Statement
+                                </button>
+                                <button class="menu-btn" onclick="goToScreen('changePinScreen')">
+                                    🔐 Change PIN
+                                </button>
+                                <button class="menu-btn" onclick="goToScreen('transferScreen')">
+                                    🔄 Transfer
+                                </button>
+                                <button class="menu-btn" onclick="confirmLogout()">
+                                    🚪 Exit
+                                </button>
+                            </div>
+                            
+                            <div id="atmStatus" class="atm-status"></div>
+                        </div>
+                    </div>
+
+                    <!-- Screen 4: Check Balance -->
+                    <div id="balanceScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Account Balance</h2>
+                            
+                            <div class="balance-card">
+                                <p class="balance-label">Current Balance:</p>
+                                <p class="balance-amount" id="balanceAmount">$0.00</p>
+                                <p class="balance-type" id="balanceType">Debit</p>
+                            </div>
+
+                            <div class="transaction-info">
+                                <p><strong>Card Type:</strong> <span id="cardTypeDisplay">Debit</span></p>
+                                <p><strong>Card Number:</strong> <span id="cardNumberDisplay">****</span></p>
+                                <p><strong>Last Transaction:</strong> <span id="lastTransaction">None</span></p>
+                            </div>
+
+                            <div id="balanceError" class="error-message"></div>
+
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 5: Withdraw Cash -->
+                    <div id="withdrawScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Withdraw Cash</h2>
+                            <p class="subtitle">Available Balance: $<span id="withdrawBalance">0</span></p>
+                            
+                            <div class="quick-withdrawal">
+                                <p><strong>Quick Withdrawal Options:</strong></p>
+                                <div class="withdrawal-buttons">
+                                    <button class="btn btn-withdraw" onclick="quickWithdraw(100)">$100</button>
+                                    <button class="btn btn-withdraw" onclick="quickWithdraw(200)">$200</button>
+                                    <button class="btn btn-withdraw" onclick="quickWithdraw(500)">$500</button>
+                                    <button class="btn btn-withdraw" onclick="quickWithdraw(1000)">$1000</button>
+                                </div>
+                            </div>
+
+                            <div class="custom-withdrawal">
+                                <p><strong>Custom Amount:</strong></p>
+                                <div class="input-group">
+                                    <label>$</label>
+                                    <input type="number" id="customAmount" placeholder="Enter amount" min="0">
+                                </div>
+                            </div>
+
+                            <div id="withdrawError" class="error-message"></div>
+
+                            <button class="btn btn-success" onclick="customWithdraw()">Withdraw Custom</button>
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 6: Withdrawal Confirmation -->
+                    <div id="confirmWithdrawScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Confirm Withdrawal</h2>
+                            
+                            <div class="confirmation-box">
+                                <p class="confirmation-text">You are about to withdraw:</p>
+                                <p class="withdrawal-amount" id="withdrawAmount">$0.00</p>
+                                <p class="confirmation-text">from your <span id="confirmCardType">Debit</span> account.</p>
+                            </div>
+
+                            <div id="confirmError" class="error-message"></div>
+
+                            <button class="btn btn-success" onclick="processWithdrawal()">Confirm & Withdraw</button>
+                            <button class="btn btn-danger" onclick="goToScreen('withdrawScreen')">Cancel</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 7: Withdrawal Processing -->
+                    <div id="processingScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Processing Transaction</h2>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <p class="progress-text" id="progressText">Verifying account...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screen 8: Withdrawal Success -->
+                    <div id="withdrawSuccessScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>✓ Withdrawal Successful</h2>
+                            
+                            <div class="success-message">
+                                <p class="success-amount" id="successAmount">$0.00</p>
+                                <p>has been withdrawn from your account</p>
+                            </div>
+
+                            <div class="receipt-preview">
+                                <h3>📱 SMS Notification Sent</h3>
+                                <p id="smsNotification"></p>
+                                <button class="btn btn-secondary" onclick="downloadReceipt()">🖨️ Print Receipt</button>
+                            </div>
+
+                            <div class="transaction-details">
+                                <p><strong>New Balance:</strong> $<span id="newBalance">0</span></p>
+                                <p><strong>Transaction ID:</strong> <span id="transactionID">TXN000000</span></p>
+                                <p><strong>Time:</strong> <span id="transactionTime">00:00:00</span></p>
+                            </div>
+
+                            <p class="hint">💵 Please take your cash and card</p>
+
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Continue</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 9: Mini Statement -->
+                    <div id="statementScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Mini Statement</h2>
+                            
+                            <div class="statement-list" id="statementList">
+                                <p class="no-transactions">No transactions yet</p>
+                            </div>
+
+                            <div id="statementError" class="error-message"></div>
+
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 10: Change PIN -->
+                    <div id="changePinScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Change PIN</h2>
+                            
+                            <div class="form-group">
+                                <label>Current PIN:</label>
+                                <input type="password" id="currentPin" maxlength="4" placeholder="****" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+
+                            <div class="form-group">
+                                <label>New PIN:</label>
+                                <input type="password" id="newPin" maxlength="4" placeholder="****" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Confirm New PIN:</label>
+                                <input type="password" id="confirmPin" maxlength="4" placeholder="****" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+
+                            <div id="changePinError" class="error-message"></div>
+
+                            <button class="btn btn-success" onclick="changePin()">Change PIN</button>
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 11: Transfer -->
+                    <div id="transferScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Transfer Money</h2>
+                            
+                            <div class="form-group">
+                                <label>Recipient Card Number:</label>
+                                <input type="text" id="recipientCard" maxlength="4" placeholder="Last 4 digits" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Amount to Transfer:</label>
+                                <div class="input-group">
+                                    <label>$</label>
+                                    <input type="number" id="transferAmount" placeholder="0.00" min="0">
+                                </div>
+                            </div>
+
+                            <div id="transferError" class="error-message"></div>
+
+                            <button class="btn btn-success" onclick="processTransfer()">Transfer</button>
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 12: Error - ATM Out of Cash -->
+                    <div id="atmOutOfCashScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>⚠️ Service Unavailable</h2>
+                            
+                            <div class="error-box">
+                                <p class="error-title">ATM OUT OF CASH</p>
+                                <p class="error-description">This ATM is temporarily unable to dispense cash.</p>
+                            </div>
+
+                            <div class="alternative-options">
+                                <p><strong>Alternative Options:</strong></p>
+                                <p>✓ Use Mobile Banking App to Transfer</p>
+                                <p>✓ Use Credit Card for emergency needs</p>
+                                <p>✓ Visit another ATM or bank branch</p>
+                            </div>
+
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 13: Error - Insufficient Funds -->
+                    <div id="insufficientFundsScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>⚠️ Insufficient Funds</h2>
+                            
+                            <div class="error-box">
+                                <p class="error-title">Cannot Process Withdrawal</p>
+                                <p class="error-description">Your account balance is insufficient.</p>
+                                <p class="balance-info">Your Available Balance: $<span id="availableBalance">0</span></p>
+                            </div>
+
+                            <div class="alternative-options">
+                                <p><strong>What You Can Do:</strong></p>
+                                <p>✓ Withdraw a smaller amount</p>
+                                <p>✓ Use your Credit Card</p>
+                                <p>✓ Refill via Mobile Banking App</p>
+                            </div>
+
+                            <button class="btn btn-success" onclick="goToScreen('withdrawScreen')">Try Different Amount</button>
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- Screen 14: Logout Confirmation -->
+                    <div id="logoutScreen" class="screen">
+                        <div class="atm-display">
+                            <h2>Confirm Exit</h2>
+                            
+                            <div class="logout-message">
+                                <p>Are you sure you want to exit?</p>
+                                <p class="hint">Don't forget to take your card!</p>
+                            </div>
+
+                            <button class="btn btn-success" onclick="logout()">Yes, Exit & Return Card</button>
+                            <button class="btn btn-secondary" onclick="goToScreen('mainMenuScreen')">No, Go Back</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ATM Footer -->
+                <div class="atm-footer">
+                    <p>24/7 Service</p>
+                    <p id="footerInfo">Welcome</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== MOBILE BANKING APP (RIGHT SIDE) ========== -->
+        <div class="device-container mobile-device">
+            <div class="mobile-container">
+                <!-- Mobile Status Bar -->
+                <div class="mobile-status-bar">
+                    <span class="time" id="mobileTime">9:41</span>
+                    <div class="mobile-icons">📶 🔋</div>
+                </div>
+
+                <!-- Mobile App Screens -->
+                <div class="mobile-screen-wrapper">
+                    
+                    <!-- Mobile: Login Screen -->
+                    <div id="mobileLoginScreen" class="mobile-screen active">
+                        <div class="mobile-content">
+                            <div class="app-logo">🏦</div>
+                            <h2>Banking App</h2>
+                            <p class="subtitle">Secure Mobile Banking</p>
+
+                            <div class="mobile-button-group">
+                                <button class="btn-mobile-primary" onclick="mobileLogin()">Login</button>
+                                <p class="hint">Tap to use existing ATM session</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile: Dashboard -->
+                    <div id="mobileDashboardScreen" class="mobile-screen">
+                        <div class="mobile-header">
+                            <h2 id="mobileUserName">Hello!</h2>
+                            <button class="btn-mobile-logout" onclick="mobileLogout()">⏻ Logout</button>
+                        </div>
+
+                        <div class="mobile-content">
+                            <!-- Account Cards -->
+                            <div class="mobile-account-card" id="mobileDebitCard">
+                                <div class="card-type">DEBIT ACCOUNT</div>
+                                <div class="card-balance" id="mobileDebitBalance">$5,000</div>
+                                <div class="card-number">•••• 1234</div>
+                            </div>
+
+                            <div class="mobile-account-card credit" id="mobileCreditCard">
+                                <div class="card-type">CREDIT CARD</div>
+                                <div class="card-balance" id="mobileCreditBalance">$10,000</div>
+                                <div class="card-number">•••• 5678</div>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="mobile-quick-actions">
+                                <button class="action-btn" onclick="goToMobileScreen('mobileTransferScreen')">
+                                    🔄 Transfer
+                                </button>
+                                <button class="action-btn" onclick="goToMobileScreen('mobileRefillScreen')">
+                                    💳 Refill Account
+                                </button>
+                                <button class="action-btn" onclick="goToMobileScreen('mobileHistoryScreen')">
+                                    📊 History
+                                </button>
+                                <button class="action-btn" onclick="goToMobileScreen('mobileCardsScreen')">
+                                    🔒 Cards
+                                </button>
+                            </div>
+
+                            <!-- Notifications -->
+                            <div class="mobile-notifications">
+                                <h3>Recent Notifications</h3>
+                                <div id="mobileNotificationsList"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile: Refill Debit Account -->
+                    <div id="mobileRefillScreen" class="mobile-screen">
+                        <div class="mobile-header">
+                            <button class="btn-back" onclick="goToMobileScreen('mobileDashboardScreen')">← Back</button>
+                            <h2>Refill Account</h2>
+                        </div>
+
+                        <div class="mobile-content">
+                            <div class="mobile-form">
+                                <div class="form-group-mobile">
+                                    <label>From Account:</label>
+                                    <select id="refillFromAccount">
+                                        <option value="credit">Credit Card (Available: $10,000)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group-mobile">
+                                    <label>To Account:</label>
+                                    <select id="refillToAccount">
+                                        <option value="debit">Debit Card (Current: $5,000)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group-mobile">
+                                    <label>Amount:</label>
+                                    <div class="input-group-mobile">
+                                        <span>$</span>
+                                        <input type="number" id="refillAmount" placeholder="0.00" min="0">
+                                    </div>
+                                </div>
+
+                                <div id="refillError" class="error-message-mobile"></div>
+
+                                <button class="btn-mobile-primary" onclick="mobileRefillAccount()">Refill Account</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile: Transfer -->
+                    <div id="mobileTransferScreen" class="mobile-screen">
+                        <div class="mobile-header">
+                            <button class="btn-back" onclick="goToMobileScreen('mobileDashboardScreen')">← Back</button>
+                            <h2>Transfer Money</h2>
+                        </div>
+
+                        <div class="mobile-content">
+                            <div class="mobile-form">
+                                <div class="form-group-mobile">
+                                    <label>From Account:</label>
+                                    <select id="mobileTransferFrom">
+                                        <option value="debit">Debit Card (Balance: $5,000)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group-mobile">
+                                    <label>Recipient Card (Last 4 digits):</label>
+                                    <input type="text" id="mobileTransferTo" maxlength="4" placeholder="0000" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                </div>
+
+                                <div class="form-group-mobile">
+                                    <label>Amount:</label>
+                                    <div class="input-group-mobile">
+                                        <span>$</span>
+                                        <input type="number" id="mobileTransferAmount" placeholder="0.00" min="0">
+                                    </div>
+                                </div>
+
+                                <div id="mobileTransferError" class="error-message-mobile"></div>
+
+                                <button class="btn-mobile-primary" onclick="mobileTransferMoney()">Transfer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile: History -->
+                    <div id="mobileHistoryScreen" class="mobile-screen">
+                        <div class="mobile-header">
+                            <button class="btn-back" onclick="goToMobileScreen('mobileDashboardScreen')">← Back</button>
+                            <h2>Transaction History</h2>
+                        </div>
+
+                        <div class="mobile-content">
+                            <div id="mobileTransactionHistory" class="mobile-history-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile: Cards Management -->
+                    <div id="mobileCardsScreen" class="mobile-screen">
+                        <div class="mobile-header">
+                            <button class="btn-back" onclick="goToMobileScreen('mobileDashboardScreen')">← Back</button>
+                            <h2>Card Management</h2>
+                        </div>
+
+                        <div class="mobile-content">
+                            <div class="mobile-card-management">
+                                <div class="card-item">
+                                    <div class="card-info">
+                                        <h3>💳 Debit Card</h3>
+                                        <p>•••• 1234</p>
+                                        <p class="status-active">✓ Active</p>
+                                    </div>
+                                    <button class="card-action-btn" onclick="toggleCardStatus('debit')">Lock/Unlock</button>
+                                </div>
+
+                                <div class="card-item">
+                                    <div class="card-info">
+                                        <h3>💰 Credit Card</h3>
+                                        <p>•••• 5678</p>
+                                        <p class="status-active">✓ Active</p>
+                                    </div>
+                                    <button class="card-action-btn" onclick="toggleCardStatus('credit')">Lock/Unlock</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Mobile Footer -->
+                <div class="mobile-footer">
+                    <p id="mobileFooterInfo">Tap Login to start</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
