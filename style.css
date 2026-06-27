@@ -1,0 +1,1259 @@
+/* ========== GLOBAL STYLES ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    width: 100%;
+    align-items: center;
+}
+
+/* ========== DEVICE CONTAINERS ========== */
+.device-container {
+    display: flex;
+    justify-content: center;
+}
+
+.atm-device {
+    perspective: 1000px;
+}
+
+.mobile-device {
+    perspective: 1000px;
+}
+
+/* ========== ATM CONTAINER ========== */
+.atm-container {
+    width: 100%;
+    max-width: 520px;
+    background: linear-gradient(to bottom, #1a1a1a, #0d0d0d);
+    border-radius: 25px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 
+                inset 0 0 30px rgba(255, 255, 255, 0.1);
+    padding: 40px 30px 30px;
+    border: 3px solid #333;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.atm-container::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    height: 25px;
+    background: linear-gradient(to bottom, #444, #222);
+    border-radius: 12px 12px 0 0;
+    border: 2px solid #555;
+}
+
+/* ========== MOBILE CONTAINER ========== */
+.mobile-container {
+    width: 100%;
+    max-width: 380px;
+    height: 800px;
+    background: #000;
+    border-radius: 45px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+                0 0 0 12px #111,
+                0 0 0 14px #1a1a1a;
+    padding: 12px;
+    position: relative;
+    overflow: hidden;
+    border: 8px solid #222;
+    transform-style: preserve-3d;
+}
+
+.mobile-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 10;
+}
+
+.mobile-container::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 5px;
+    background: #333;
+    border-radius: 3px;
+}
+
+/* ========== MOBILE STATUS BAR ========== */
+.mobile-status-bar {
+    background: #000;
+    color: #fff;
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 0 0 20px 20px;
+    position: relative;
+    z-index: 11;
+}
+
+.mobile-icons {
+    font-size: 12px;
+    letter-spacing: 4px;
+}
+
+/* ========== MOBILE SCREEN WRAPPER ========== */
+.mobile-screen-wrapper {
+    background: #1a1a1a;
+    height: calc(100% - 100px);
+    border-radius: 20px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.mobile-screen {
+    display: none;
+    height: 100%;
+    color: #fff;
+}
+
+.mobile-screen.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== ATM HEADER ========== */
+.atm-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #00ff88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.atm-header h1 {
+    font-size: 2em;
+    margin-bottom: 5px;
+    letter-spacing: 3px;
+}
+
+.tagline {
+    font-size: 0.85em;
+    color: #888;
+}
+
+/* ========== CARD SLOT DISPLAY ========== */
+.card-slot-display {
+    background: linear-gradient(135deg, #333, #1a1a1a);
+    border: 2px solid #555;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.card-guide {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.card-visual-large {
+    width: 100%;
+    max-width: 280px;
+    height: 180px;
+    background: linear-gradient(135deg, #2a7f62, #1a5f52);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.card-visual-large.inserting {
+    animation: cardInsert 0.5s ease-in-out;
+}
+
+@keyframes cardInsert {
+    0% { transform: translateY(-50px); opacity: 0; }
+    50% { transform: translateY(10px); }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.chip {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    border-radius: 8px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== CASH OUTPUT ========== */
+.cash-output-display {
+    height: 40px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cash-animation {
+    font-size: 2em;
+    animation: cashDispense 2s ease-in-out;
+}
+
+@keyframes cashDispense {
+    0% { transform: translateY(-50px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(50px); opacity: 0; }
+}
+
+/* ========== SCREEN WRAPPER ========== */
+.screen-wrapper {
+    position: relative;
+    min-height: 500px;
+}
+
+.screen {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.atm-display {
+    color: #00ff88;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 30px;
+    min-height: 450px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.atm-display h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.subtitle {
+    color: #888;
+    font-size: 0.95em;
+    margin-bottom: 20px;
+}
+
+/* ========== ERRORS ========== */
+.error-message {
+    background: #3a1a1a;
+    border: 1px solid #ff6b6b;
+    color: #ff8787;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 15px 0;
+    display: none;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.error-box {
+    background: #3a2a2a;
+    border: 2px solid #ff6b6b;
+    color: #ff8787;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.error-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.error-description {
+    font-size: 0.9em;
+    margin: 8px 0;
+}
+
+/* ========== CARD SELECTOR ========== */
+.card-selector {
+    margin: 30px 0;
+}
+
+.btn-card {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: 2px solid;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.debit-btn {
+    border-color: #2a7f62;
+    background: rgba(42, 127, 98, 0.2);
+    color: #00ff88;
+}
+
+.debit-btn:hover {
+    background: rgba(42, 127, 98, 0.4);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.credit-btn {
+    border-color: #6c63ff;
+    background: rgba(108, 99, 255, 0.2);
+    color: #00d4ff;
+}
+
+.credit-btn:hover {
+    background: rgba(108, 99, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+/* ========== PIN INPUT ========== */
+.pin-input-container {
+    background: #1a1a1a;
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.pin-display {
+    text-align: center;
+    font-size: 1.8em;
+    letter-spacing: 15px;
+    color: #00ff88;
+    font-weight: bold;
+}
+
+/* ========== PIN BUTTONS ========== */
+.pin-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.btn-num {
+    padding: 12px;
+    font-size: 1.2em;
+    background: #1a3a2a;
+    border: 1px solid #2a6f56;
+    color: #00ff88;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-num:hover {
+    background: #2a5a4a;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.btn-num:active {
+    transform: scale(0.95);
+}
+
+/* ========== MAIN MENU ========== */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 30px 0;
+    flex-grow: 1;
+}
+
+.menu-btn {
+    padding: 20px 15px;
+    background: linear-gradient(135deg, #1a3a2a, #0d2a1a);
+    border: 2px solid #2a6f56;
+    color: #00ff88;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.menu-btn:hover {
+    background: linear-gradient(135deg, #2a5a4a, #1a3f2a);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ========== STATUS ========== */
+.atm-status {
+    background: #1a3a1a;
+    border: 1px solid #2a6f2a;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+/* ========== BALANCE DISPLAY ========== */
+.balance-card {
+    background: linear-gradient(135deg, #2a5a4a, #1a3a2a);
+    border: 2px solid #2a6f56;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    margin: 20px 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.balance-label {
+    color: #888;
+    font-size: 0.95em;
+    margin-bottom: 10px;
+}
+
+.balance-amount {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #00ff88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    margin: 10px 0;
+}
+
+.balance-type {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.transaction-info {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-size: 0.9em;
+}
+
+.transaction-info p {
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ========== WITHDRAWAL ========== */
+.quick-withdrawal,
+.custom-withdrawal {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.withdrawal-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.btn-withdraw {
+    padding: 12px;
+    background: #1a3a2a;
+    border: 1px solid #2a6f56;
+    color: #00ff88;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-withdraw:hover {
+    background: #2a5a4a;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.input-group label {
+    padding: 0 12px;
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: #0d0d0d;
+    color: #00ff88;
+    font-size: 1.1em;
+}
+
+.input-group input::placeholder {
+    color: #555;
+}
+
+/* ========== CONFIRMATION ========== */
+.confirmation-box {
+    background: #2a3a2a;
+    border: 2px solid #2a6f56;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.confirmation-text {
+    color: #888;
+    margin: 8px 0;
+}
+
+.withdrawal-amount {
+    font-size: 2.5em;
+    color: #00ff88;
+    font-weight: bold;
+    margin: 15px 0;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+/* ========== PROCESSING ========== */
+.progress-container {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 30px 20px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2a6f56, #00ff88);
+    width: 0%;
+    animation: progressAnimation 3s ease-in-out forwards;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+@keyframes progressAnimation {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+.progress-text {
+    color: #888;
+    font-size: 0.9em;
+}
+
+/* ========== SUCCESS MESSAGE ========== */
+.success-message {
+    background: #1a3a1a;
+    border: 2px solid #2a6f2a;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.success-amount {
+    font-size: 2.5em;
+    color: #00ff88;
+    font-weight: bold;
+    margin: 10px 0;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.receipt-preview {
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.receipt-preview h3 {
+    color: #00ff88;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.receipt-preview p {
+    color: #888;
+    font-size: 0.85em;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.transaction-details {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
+.transaction-details p {
+    margin: 8px 0;
+    color: #888;
+}
+
+.hint {
+    color: #2a6f56;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+/* ========== STATEMENT ========== */
+.statement-list {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.no-transactions {
+    color: #666;
+    text-align: center;
+    padding: 20px;
+}
+
+.statement-table {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.statement-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    font-size: 0.85em;
+}
+
+.statement-row.debit {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: #ff6b6b;
+}
+
+.statement-row.credit {
+    background: rgba(42, 127, 98, 0.1);
+    border-color: #2a6f56;
+}
+
+.tx-desc {
+    flex: 1;
+    color: #00ff88;
+}
+
+.tx-amount {
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.tx-date {
+    color: #666;
+    font-size: 0.8em;
+}
+
+/* ========== FORMS ========== */
+.form-group {
+    margin: 15px 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #888;
+    font-size: 0.9em;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #00ff88;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+}
+
+.form-group input::placeholder {
+    color: #555;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2a6f56;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+/* ========== ALTERNATIVE OPTIONS ========== */
+.alternative-options {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 0.9em;
+}
+
+.alternative-options p {
+    margin: 8px 0;
+    color: #888;
+}
+
+.alternative-options p strong {
+    color: #00ff88;
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Courier New', monospace;
+    margin: 8px 5px;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #2a6f56, #1a5f46);
+    color: #00ff88;
+    border: 1px solid #2a7f66;
+}
+
+.btn-success:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #6b2a2a, #5f1a1a);
+    color: #ff8787;
+    border: 1px solid #7f2a2a;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 0 20px rgba(255, 135, 135, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #1a3a2a;
+    color: #00ff88;
+    border: 1px solid #2a6f56;
+}
+
+.btn-secondary:hover {
+    background: #2a5a4a;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+/* ========== FOOTER ========== */
+.atm-footer {
+    text-align: center;
+    color: #666;
+    font-size: 0.85em;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #333;
+}
+
+.atm-footer p {
+    margin: 4px 0;
+}
+
+.logout-message {
+    text-align: center;
+    background: #2a3a2a;
+    border: 2px solid #2a6f56;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.logout-message p {
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+.balance-info {
+    background: #1a3a1a;
+    border: 1px solid #2a6f2a;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 15px 0;
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+}
+
+.test-info {
+    background: #1a3a2a;
+    border: 1px solid #2a6f56;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    line-height: 1.8;
+}
+
+.test-info p {
+    margin: 8px 0;
+}
+
+.test-info hr {
+    border: none;
+    border-top: 1px solid #333;
+    margin: 10px 0;
+}
+
+/* ========== MOBILE BANKING APP STYLES ========== */
+.mobile-header {
+    background: linear-gradient(135deg, #2a5a4a, #1a3a2a);
+    padding: 20px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mobile-header h2 {
+    color: #00ff88;
+    font-size: 1.3em;
+}
+
+.btn-mobile-logout {
+    background: #6b2a2a;
+    border: none;
+    color: #ff8787;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.btn-mobile-logout:hover {
+    background: #7f3a3a;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    color: #00ff88;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.mobile-content {
+    overflow-y: auto;
+    padding: 20px;
+    flex: 1;
+}
+
+.mobile-footer {
+    background: #0d0d0d;
+    border-top: 1px solid #333;
+    padding: 15px;
+    text-align: center;
+    color: #888;
+    font-size: 0.85em;
+}
+
+.app-logo {
+    font-size: 4em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mobile-button-group {
+    margin: 30px 0;
+}
+
+.btn-mobile-primary {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #2a6f56, #1a5f46);
+    border: none;
+    color: #00ff88;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: all 0.3s;
+}
+
+.btn-mobile-primary:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    transform: translateY(-2px);
+}
+
+.mobile-account-card {
+    background: linear-gradient(135deg, #2a7f62, #1a5f52);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px 0;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-account-card.credit {
+    background: linear-gradient(135deg, #6c63ff, #5c53d5);
+}
+
+.card-type {
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 10px;
+}
+
+.card-balance {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.card-number {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.mobile-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #1a3a2a, #0d2a1a);
+    border: 1px solid #2a6f56;
+    color: #00ff88;
+    padding: 15px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: all 0.3s;
+}
+
+.action-btn:hover {
+    background: linear-gradient(135deg, #2a5a4a, #1a3f2a);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.mobile-notifications {
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.mobile-notifications h3 {
+    color: #00ff88;
+    margin-bottom: 15px;
+}
+
+.mobile-notification-item {
+    background: #1a1a1a;
+    border-left: 3px solid #00ff88;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    font-size: 0.85em;
+    color: #888;
+}
+
+.notification-amount {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.notification-time {
+    color: #666;
+    font-size: 0.8em;
+}
+
+/* ========== MOBILE FORMS ========== */
+.mobile-form {
+    padding: 10px 0;
+}
+
+.form-group-mobile {
+    margin: 20px 0;
+}
+
+.form-group-mobile label {
+    display: block;
+    color: #888;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+}
+
+.form-group-mobile select,
+.form-group-mobile input {
+    width: 100%;
+    padding: 12px;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    color: #00ff88;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+}
+
+.form-group-mobile select::placeholder,
+.form-group-mobile input::placeholder {
+    color: #555;
+}
+
+.form-group-mobile input:focus,
+.form-group-mobile select:focus {
+    outline: none;
+    border-color: #2a6f56;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.input-group-mobile {
+    display: flex;
+    align-items: center;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.input-group-mobile span {
+    padding: 0 12px;
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.input-group-mobile input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: #0d0d0d;
+}
+
+.error-message-mobile {
+    background: #3a1a1a;
+    border: 1px solid #ff6b6b;
+    color: #ff8787;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 15px 0;
+    display: none;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+/* ========== MOBILE HISTORY ========== */
+.mobile-history-list {
+    padding: 10px 0;
+}
+
+.history-item {
+    background: #0d0d0d;
+    border-left: 3px solid #00ff88;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+.history-type {
+    color: #00ff88;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.history-amount {
+    font-size: 1.1em;
+    color: #fff;
+    font-weight: bold;
+}
+
+.history-date {
+    color: #666;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+/* ========== CARD MANAGEMENT ========== */
+.mobile-card-management {
+    padding: 10px 0;
+}
+
+.card-item {
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-info h3 {
+    color: #00ff88;
+    margin-bottom: 8px;
+}
+
+.card-info p {
+    color: #888;
+    font-size: 0.9em;
+    margin: 5px 0;
+}
+
+.status-active {
+    color: #00ff88 !important;
+    font-weight: bold;
+}
+
+.card-action-btn {
+    background: linear-gradient(135deg, #2a6f56, #1a5f46);
+    border: none;
+    color: #00ff88;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.card-action-btn:hover {
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .atm-container,
+    .mobile-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .atm-container {
+        padding: 30px 20px 20px;
+    }
+
+    .atm-display {
+        padding: 20px;
+        min-height: 400px;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .withdrawal-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .balance-amount,
+    .withdrawal-amount,
+    .success-amount {
+        font-size: 2em;
+    }
+
+    .mobile-container {
+        max-width: 360px;
+        height: 700px;
+    }
+    
+    .mobile-quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
